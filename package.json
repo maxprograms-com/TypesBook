@@ -1,11 +1,24 @@
 {
   "name": "typesbook",
   "version": "1.0.0",
-  "description": "DocBook files merger",
+  "description": "DocBook files merger", "keywords": [
+    "docbook",
+    "merger",
+    "typescript"
+  ],
   "type": "module",
   "main": "dist/typesbook.js",
   "bin": {
     "typesbook": "dist/cli.js"
+  },
+  "author": {
+    "name": "Rodolfo M. Raya",
+    "url": "https://maxprograms.com",
+    "email": "rmraya@maxprograms.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maxprograms-com/TypesBook.git"
   },
   "scripts": {
     "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
