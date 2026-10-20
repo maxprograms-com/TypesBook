@@ -1,0 +1,24 @@
+{
+  "name": "typesbook",
+  "version": "1.0.0",
+  "description": "DocBook files merger",
+  "type": "module",
+  "main": "dist/typesbook.js",
+  "bin": {
+    "typesbook": "dist/cli.js"
+  },
+  "scripts": {
+    "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
+    "copy-catalog": "node -e \"require('node:fs').cpSync('catalog', 'dist/catalog', { recursive: true })\"",
+    "make-executable": "node -e \"const fs=require('node:fs'); const p='dist/cli.js'; if (fs.existsSync(p)) { try { fs.chmodSync(p, 0o755); } catch {} }\"",
+    "build": "npm run clean && tsc && npm run copy-catalog && npm run make-executable",
+    "prepack": "npm run build"
+  },
+  "dependencies": {
+    "typesxml": "^2.7.2"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "typescript": "^7.0.2"
+  }
+}
