@@ -1,5 +1,9 @@
 # TypesBook
 
+[![npm version](https://img.shields.io/npm/v/typesditac)](https://www.npmjs.com/package/typesbook)
+[![npm license](https://img.shields.io/npm/l/typesditac)](LICENSE)
+[![TypeScript](https://img.shields.io/badge/implementation-native%20TypeScript-3178c6)](https://www.typescriptlang.org/)
+
 TypesBook is a tool for merging DocBook files. It processes XML documents using a catalog and generates the merged output.
 
 ## Installation
