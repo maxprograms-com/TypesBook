@@ -3,6 +3,7 @@ import { dirname, resolve } from "node:path";
 import {
     Catalog,
     DOMBuilder,
+    GrammarCache,
     SAXParser,
     TextNode,
     XMLAttribute,
@@ -17,6 +18,7 @@ const XINCLUDE: string = "xi:include";
 export class TypesBookMerger {
     private readonly catalogFile: string;
     private readonly ids: Set<string> = new Set<string>();
+    private readonly grammarCache: GrammarCache = new GrammarCache();
 
     public constructor(catalogFile: string) {
         this.catalogFile = resolve(catalogFile);
@@ -52,6 +54,7 @@ export class TypesBookMerger {
         const parser: SAXParser = new SAXParser();
         parser.setContentHandler(builder);
         parser.setCatalog(catalog);
+        parser.setGrammarCache(this.grammarCache);
         parser.parseFile(file);
         const document: XMLDocument | undefined = builder.getDocument();
         if (!document) {
