@@ -1,6 +1,6 @@
 {
   "name": "typesbook",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "DocBook files merger", "keywords": [
     "docbook",
     "merger",
@@ -28,7 +28,7 @@
     "prepack": "npm run build"
   },
   "dependencies": {
-    "typesxml": "^2.8.0"
+    "typesxml": "^2.9.0"
   },
   "devDependencies": {
     "@types/node": "^24.19.2",
