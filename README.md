@@ -12,13 +12,30 @@ TypesBook is a tool for merging DocBook files. It processes XML documents using 
 npm install -g typesbook
 ```
 
-## Usage
+## Command-line usage
 
 ```bash
 typesbook -i <input-file> -o <output-file>
 ```
 
 Replace `<input-file>` with the path to your input DocBook XML file and `<output-file>` with the desired path for the merged output.
+
+## Library usage
+
+TypesBook can also be used from a TypeScript or JavaScript application:
+
+```bash
+npm install typesbook
+```
+
+```typescript
+import { TypesBookMerger } from "typesbook";
+
+const merger = new TypesBookMerger("/path/to/catalog.xml");
+merger.merge("input.xml", "output.xml");
+```
+
+`TypesBookMerger` requires the path to an XML catalog when it is created. The `merge` method expands `xi:include` elements, resolves links, and writes the merged document to the output path.
 
 ## Catalog
 

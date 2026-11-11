@@ -1,17 +1,18 @@
+/*******************************************************************************
+ * Copyright (c) 2026 Maxprograms.
+ *
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 1.0
+ * which accompanies this distribution, and is available at
+ * https://www.eclipse.org/org/documents/epl-v10.html
+ *
+ * Contributors:
+ *     Maxprograms - initial API and implementation
+ *******************************************************************************/
+
 import { existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
-import {
-    Catalog,
-    DOMBuilder,
-    GrammarCache,
-    SAXParser,
-    TextNode,
-    XMLAttribute,
-    XMLDocument,
-    XMLElement,
-    XMLNode,
-    XMLWriter
-} from "typesxml";
+import { Catalog, DOMBuilder, GrammarCache, SAXParser, TextNode, XMLAttribute, XMLDocument, XMLElement, XMLNode, XMLWriter } from "typesxml";
 
 const XINCLUDE: string = "xi:include";
 
@@ -34,9 +35,6 @@ export class TypesBookMerger {
         if (!existsSync(input)) {
             throw new Error("Input file not found: " + input);
         }
-
-        console.log("Input:  " + input);
-        console.log("Output: " + output);
         const document: XMLDocument = this.parse(input);
         const root: XMLElement | undefined = document.getRoot();
         if (!root) {
@@ -73,7 +71,6 @@ export class TypesBookMerger {
             if (!(node instanceof XMLElement)) {
                 continue;
             }
-
             if (node.getName() === XINCLUDE) {
                 const href: string | undefined = node.getAttribute("href")?.getValue();
                 if (!href) {
@@ -82,7 +79,6 @@ export class TypesBookMerger {
                 if (node.getAttribute("parse")?.getValue() === "text") {
                     throw new Error("Text xi:include is not supported: " + href);
                 }
-
                 const includedFile: string = resolve(folder, href);
                 if (this.parsedFiles.has(includedFile)) {
                     throw new Error("Circular include detected: " + includedFile);
