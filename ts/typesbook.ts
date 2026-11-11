@@ -42,7 +42,7 @@ export class TypesBookMerger {
         if (!root) {
             throw new Error("Input file has no document element: " + input);
         }
-
+        this.parsedFiles.add(input);
         this.expandIncludes(root, dirname(input));
         this.harvestIds(root);
         this.resolveLinks(root);
@@ -52,9 +52,6 @@ export class TypesBookMerger {
     }
 
     private parse(file: string): XMLDocument {
-        if (this.parsedFiles.has(file)) {
-            throw new Error('Circular include detected: ' + file);
-        }
         console.log("Processing: " + file);
         const builder: DOMBuilder = new DOMBuilder();
         const parser: SAXParser = new SAXParser();
@@ -66,7 +63,6 @@ export class TypesBookMerger {
         if (!document) {
             throw new Error("Unable to parse XML document: " + file);
         }
-        this.parsedFiles.add(file);
         return document;
     }
 
@@ -88,6 +84,10 @@ export class TypesBookMerger {
                 }
 
                 const includedFile: string = resolve(folder, href);
+                if (this.parsedFiles.has(includedFile)) {
+                    throw new Error("Circular include detected: " + includedFile);
+                }
+                this.parsedFiles.add(includedFile);
                 const includedDocument: XMLDocument = this.parse(includedFile);
                 const includedRoot: XMLElement | undefined = includedDocument.getRoot();
                 if (!includedRoot) {
@@ -95,6 +95,7 @@ export class TypesBookMerger {
                 }
                 this.expandIncludes(includedRoot, dirname(includedFile));
                 content[index] = includedRoot;
+                this.parsedFiles.delete(includedFile);
                 continue;
             }
 
@@ -153,7 +154,7 @@ export class TypesBookMerger {
     private withoutLinkTextNewlines(content: XMLNode[]): XMLNode[] {
         return content.map((node: XMLNode): XMLNode => {
             if (node instanceof TextNode) {
-                node.setValue(node.getValue().replace(/\n/g, ""));
+                node.setValue(node.getValue().replace(/\n/g, " "));
             }
             return node;
         });
