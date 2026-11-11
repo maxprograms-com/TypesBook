@@ -16,12 +16,16 @@ import {
 const XINCLUDE: string = "xi:include";
 
 export class TypesBookMerger {
-    private readonly catalogFile: string;
+
+    private catalog: Catalog;
     private readonly ids: Set<string> = new Set<string>();
     private readonly grammarCache: GrammarCache = new GrammarCache();
+    private parsedFiles: Set<string>;
 
     public constructor(catalogFile: string) {
-        this.catalogFile = resolve(catalogFile);
+        let catalogFileResolved = resolve(catalogFile);
+        this.catalog = new Catalog(catalogFileResolved);
+        this.parsedFiles = new Set<string>();
     }
 
     public merge(inputFile: string, outputFile: string): void {
@@ -48,18 +52,21 @@ export class TypesBookMerger {
     }
 
     private parse(file: string): XMLDocument {
+        if (this.parsedFiles.has(file)) {
+            throw new Error('Circular include detected: ' + file);
+        }
         console.log("Processing: " + file);
-        const catalog: Catalog = new Catalog(this.catalogFile);
         const builder: DOMBuilder = new DOMBuilder();
         const parser: SAXParser = new SAXParser();
         parser.setContentHandler(builder);
-        parser.setCatalog(catalog);
+        parser.setCatalog(this.catalog);
         parser.setGrammarCache(this.grammarCache);
         parser.parseFile(file);
         const document: XMLDocument | undefined = builder.getDocument();
         if (!document) {
             throw new Error("Unable to parse XML document: " + file);
         }
+        this.parsedFiles.add(file);
         return document;
     }
 
@@ -97,7 +104,10 @@ export class TypesBookMerger {
     }
 
     private harvestIds(element: XMLElement): void {
-        const id: string | undefined = element.getAttribute("id")?.getValue();
+        let id: string | undefined = element.getAttribute("id")?.getValue();
+        if (!id) {
+            id = element.getAttribute("xml:id")?.getValue();
+        }
         if (id) {
             this.ids.add(id);
         }
