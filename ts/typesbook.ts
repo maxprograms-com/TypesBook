@@ -110,6 +110,9 @@ export class TypesBookMerger {
             id = element.getAttribute("xml:id")?.getValue();
         }
         if (id) {
+            if (this.ids.has(id)) {
+                console.log("Duplicate ID detected: " + id);
+            }
             this.ids.add(id);
         }
         const children: XMLElement[] = element.getChildren();
